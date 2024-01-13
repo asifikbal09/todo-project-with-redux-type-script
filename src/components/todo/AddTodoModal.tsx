@@ -8,22 +8,30 @@ import {
   DialogHeader,
   DialogClose,
 } from "../ui/dialog";
-import { Label } from "@radix-ui/react-dropdown-menu";
 import { Input } from "../ui/input";
 import { FormEvent, useState } from "react";
 import { useAppDispatch } from "@/redux/hook";
 import { addTodo } from "@/redux/features/todoSlice";
+import { Label } from "../ui/label";
+
+
 
 const AddTodoModal = () => {
   const [task, setTask] = useState("");
   const [description, setDescription] = useState("");
-  const dispatch = useAppDispatch()
+  const dispatch = useAppDispatch();
 
   const handelSubmit = (e: FormEvent) => {
     e.preventDefault();
-    const taskDetails={ title:task, description:description };
-    dispatch(addTodo(taskDetails))
 
+    const randomStr = Math.random().toString(36).substring(2, 7);
+
+    const taskDetails = {
+      id: randomStr,
+      title: task,
+      description: description,
+    };
+    dispatch(addTodo(taskDetails));
   };
 
   return (
@@ -51,7 +59,7 @@ const AddTodoModal = () => {
               />
             </div>
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="description"  className="text-right">
+              <Label htmlFor="description" className="text-right">
                 Description
               </Label>
               <Input
@@ -62,7 +70,7 @@ const AddTodoModal = () => {
             </div>
           </div>
           <DialogClose asChild>
-            <Button  type="submit">Save changes</Button>
+            <Button type="submit">Save changes</Button>
           </DialogClose>
         </form>
       </DialogContent>
