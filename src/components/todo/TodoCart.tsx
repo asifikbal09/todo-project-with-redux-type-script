@@ -1,26 +1,40 @@
-import { useAppDispatch } from "@/redux/hook";
 import { Button } from "../ui/button";
-import { removeTodo, toggleComplete } from "@/redux/features/todoSlice";
+import { useDeleteTodoMutation, useToggleTodoMutation } from "@/redux/api/api";
 
 type TTodoCartProps = {
-  id: string;
+  _id: string;
   title: string;
   description: string;
-  
+  priority: string;
   isComplete?: boolean;
 };
 
 const TodoCart = ({
+  _id,
   title,
   description,
-  id,
+  priority,
   isComplete,
- 
 }: TTodoCartProps) => {
-  const dispatch = useAppDispatch();
+  // const dispatch = useAppDispatch();
+  const [toggleTodo, {  }] = useToggleTodoMutation();
   const handelToggle = () => {
-    dispatch(toggleComplete(id));
+    const option = {
+      id: _id,
+      data: {
+        title,
+        description,
+        isComplete: !isComplete,
+        priority,
+      },
+    };
+    toggleTodo(option);
+
+    // dispatch(toggleComplete(_id));
   };
+
+  const [deleteTodo, { isLoading, isError, data }] = useDeleteTodoMutation();
+
   return (
     <div>
       <div className="flex justify-between border items-center bg-white p-3 rounded-md ">
@@ -30,9 +44,10 @@ const TodoCart = ({
           type="checkbox"
           name=""
           id=""
+          defaultChecked={isComplete}
         />
         <p className="font-semibold flex-1">{title}</p>
-        {/* <div className="flex gap-3 items-center flex-1">
+        <div className="flex gap-3 items-center flex-1">
           <div
             className={`size-3 rounded-full
             ${priority === "high" ? "bg-red-600" : null}
@@ -41,7 +56,7 @@ const TodoCart = ({
             `}
           ></div>
           <p>{priority}</p>
-        </div> */}
+        </div>
         <div className="flex-1">
           {isComplete ? (
             <p className="text-green-500">Done</p>
@@ -51,10 +66,7 @@ const TodoCart = ({
         </div>
         <p className="flex-[2]">{description}</p>
         <div className="space-x-3">
-          <Button
-            onClick={() => dispatch(removeTodo(id))}
-            className="bg-red-500"
-          >
+          <Button onClick={() => deleteTodo(_id)} className="bg-red-500">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
